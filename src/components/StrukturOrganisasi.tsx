@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import orgData from '../data/struktur';
 import type { Member } from '../data/struktur';
 
-
-const members = orgData;
-
-const MemberCard: React.FC<{ member: Member }> = ({ member }) => (
+const MemberCard: React.FC<{ member: Member; onClick: (member: Member) => void }> = ({ member, onClick }) => (
   <div
-    className="absolute bg-white rounded-xl p-3 shadow-lg text-center z-20 w-52 min-h-36 flex flex-col justify-center"
+    className="absolute bg-white rounded-xl p-3 shadow-lg text-center z-20 w-52 min-h-36 flex flex-col justify-center cursor-pointer"
     style={{ left: `${member.x}px`, top: `${member.y}px` }}
+    onClick={() => onClick(member)}
   >
     <div className="w-20 h-20 mx-auto mb-2 rounded-full overflow-hidden border-4 border-blue-400 bg-gray-200 flex items-center justify-center">
       {member.photo ? (
@@ -26,7 +24,7 @@ const MemberCard: React.FC<{ member: Member }> = ({ member }) => (
   </div>
 );
 
-const Lines: React.FC = () => {
+const Lines: React.FC<{ members: Member[] }> = ({ members }) => {
   const getCenter = (memberId: number) => {
     const member = members.find(m => m.id === memberId);
     if (!member) return { x: 0, y: 0 };
@@ -44,36 +42,24 @@ const Lines: React.FC = () => {
   const ST2 = getCenter(9);
   const ST3 = getCenter(10);
 
-  const lineProps = {
-    stroke: 'white',
-    strokeWidth: '2',
-    strokeLinecap: 'round' as const,
-  };
-
+  const lineProps = { stroke: 'white', strokeWidth: 2, strokeLinecap: 'round' as const };
   const splitY = L.y + 80;
   const midY2 = S.y + 100;
   const midStaffY = K1.y + 100;
 
   return (
     <svg className="absolute top-0 left-0 w-full h-full pointer-events-none z-10">
-      {/* Main lines */}
       <line x1={L.x} y1={L.y + 40} x2={L.x} y2={splitY} {...lineProps} />
       <line x1={L.x} y1={splitY} x2={S.x} y2={splitY} {...lineProps} />
       <line x1={S.x} y1={splitY} x2={S.x} y2={S.y - 40} {...lineProps} />
-
-      {/* Sekretaris branch */}
       <line x1={S.x} y1={S.y + 40} x2={S.x} y2={midY2} {...lineProps} />
       <line x1={B.x} y1={midY2} x2={P.x} y2={midY2} {...lineProps} />
       <line x1={B.x} y1={midY2} x2={B.x} y2={B.y - 40} {...lineProps} />
       <line x1={P.x} y1={midY2} x2={P.x} y2={P.y - 40} {...lineProps} />
-
-      {/* Kasi branch */}
       <line x1={K1.x} y1={splitY} x2={K3.x} y2={splitY} {...lineProps} />
       <line x1={K1.x} y1={splitY} x2={K1.x} y2={K1.y - 40} {...lineProps} />
       <line x1={K2.x} y1={splitY} x2={K2.x} y2={K2.y - 40} {...lineProps} />
       <line x1={K3.x} y1={splitY} x2={K3.x} y2={K3.y - 40} {...lineProps} />
-
-      {/* Staf branch */}
       <line x1={ST1.x} y1={midStaffY} x2={ST3.x} y2={midStaffY} {...lineProps} />
       <line x1={K1.x} y1={K1.y + 40} x2={ST1.x} y2={midStaffY} {...lineProps} />
       <line x1={K2.x} y1={K2.y + 40} x2={ST2.x} y2={midStaffY} {...lineProps} />
@@ -86,52 +72,123 @@ const Lines: React.FC = () => {
 };
 
 const StrukturOrganisasi: React.FC = () => {
+  const [members, setMembers] = useState<Member[]>(orgData);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const logoImg = '/cakung-barat/logo.png';
-  
+
+  const handleSave = () => {
+    if (!selectedMember) return;
+    setMembers(members.map(m => m.id === selectedMember.id ? selectedMember : m));
+    setSelectedMember(null);
+  };
+
+  const handleDelete = () => {
+    if (!selectedMember) return;
+    setMembers(members.filter(m => m.id !== selectedMember.id));
+    setSelectedMember(null);
+  };
+
   return (
     <section className="py-10 px-5 bg-gray-100">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-2">Struktur Organisasi</h2>
         <p className="text-gray-600 mb-8">Kelurahan Cakung Barat</p>
         <div className="bg-linear-to-b from-accent to-blue-700 rounded-2xl p-2 md:p-10 shadow-inner overflow-hidden relative">
-            <TransformWrapper
-                initialScale={0.7}
-                minScale={0.5}
-                maxScale={3}
-                limitToBounds={true}
-                centerOnInit={true}
-            >
-                {({ zoomIn, zoomOut, resetTransform }) => (
-                    <>
-                        <div className="absolute top-2 left-2 z-30 p-2">
-                            <button onClick={() => zoomIn()} className="bg-white text-black w-8 h-8 rounded-md shadow-md mr-2 font-bold">+</button>
-                            <button onClick={() => zoomOut()} className="bg-white text-black w-8 h-8 rounded-md shadow-md mr-2 font-bold">-</button>
-                            <button onClick={() => resetTransform()} className="bg-white text-black w-8 h-8 rounded-md shadow-md font-bold">⟳</button>
-                        </div>
-                        <TransformComponent wrapperStyle={{ width: '100%', height: '600px' }} contentStyle={{ width: '1400px' }}>
-                            <div className="relative mx-auto" style={{ height: '900px', width: '1400px' }}>
-                                <div className="absolute top-5 left-5 w-20 h-20 bg-white rounded-xl p-1 shadow-lg flex items-center justify-center">
-                                    <img 
-                                  src={logoImg} 
-                                  alt="Logo Cakung Barat" 
-                                  className="w-full h-full object-contain" 
-                                  onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><rect width="24" height="24" fill="%239CCDDC"/><text x="12" y="16" font-family="Arial" font-size="14" fill="white" text-anchor="middle">CB</text></svg>';
-                                  }} 
-                                />
-                                </div>
-                                <Lines />
-                                {members.map(member => (
-                                    <MemberCard key={member.id} member={member} />
-                                ))}
-                            </div>
-                        </TransformComponent>
-                    </>
-                )}
-            </TransformWrapper>
+          <TransformWrapper
+            initialScale={0.7}
+            minScale={0.5}
+            maxScale={3}
+            limitToBounds={true}
+            centerOnInit={true}
+          >
+            {({ zoomIn, zoomOut, resetTransform }) => (
+              <>
+                <div className="absolute top-2 left-2 z-30 p-2">
+                  <button onClick={() => zoomIn()} className="bg-white text-black w-8 h-8 rounded-md shadow-md mr-2 font-bold">+</button>
+                  <button onClick={() => zoomOut()} className="bg-white text-black w-8 h-8 rounded-md shadow-md mr-2 font-bold">-</button>
+                  <button onClick={() => resetTransform()} className="bg-white text-black w-8 h-8 rounded-md shadow-md font-bold">⟳</button>
+                </div>
+                <TransformComponent wrapperStyle={{ width: '100%', height: '600px' }} contentStyle={{ width: '1400px' }}>
+                  <div className="relative mx-auto" style={{ height: '900px', width: '1400px' }}>
+                    <div className="absolute top-5 left-5 w-20 h-20 bg-white rounded-xl p-1 shadow-lg flex items-center justify-center">
+                      <img 
+                        src={logoImg} 
+                        alt="Logo Cakung Barat" 
+                        className="w-full h-full object-contain" 
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><rect width="24" height="24" fill="%239CCDDC"/><text x="12" y="16" font-family="Arial" font-size="14" fill="white" text-anchor="middle">CB</text></svg>';
+                        }} 
+                      />
+                    </div>
+                    <Lines members={members} />
+                    {members.map(member => (
+                      <MemberCard key={member.id} member={member} onClick={setSelectedMember} />
+                    ))}
+                  </div>
+                </TransformComponent>
+              </>
+            )}
+          </TransformWrapper>
         </div>
       </div>
+
+      {/* Modal CRUD */}
+{selectedMember && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl p-6 w-96">
+      <h2 className="text-xl font-bold mb-4">Edit Member</h2>
+      <label className="block text-sm font-semibold mb-1">Nama</label>
+      <input
+        className="w-full border rounded p-2 mb-3"
+        value={selectedMember.name}
+        onChange={e => setSelectedMember({ ...selectedMember, name: e.target.value })}
+      />
+      <label className="block text-sm font-semibold mb-1">Jabatan</label>
+      <input
+        className="w-full border rounded p-2 mb-3"
+        value={selectedMember.position}
+        onChange={e => setSelectedMember({ ...selectedMember, position: e.target.value })}
+      />
+
+      {/* Tambah foto */}
+      <label className="block text-sm font-semibold mb-1">Foto</label>
+      <div
+        className="w-full border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition"
+        onClick={() => document.getElementById('photoInput')?.click()}
+      >
+        {selectedMember.photo ? (
+          <img src={selectedMember.photo} alt="Foto Member" className="mx-auto h-24 w-24 object-cover rounded-full" />
+        ) : (
+          <span className="text-gray-500">Klik atau seret untuk memilih foto</span>
+        )}
+      </div>
+      <input
+        id="photoInput"
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={e => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            setSelectedMember({ ...selectedMember, photo: reader.result as string });
+          };
+          reader.readAsDataURL(file);
+        }}
+      />
+
+
+      <div className="flex justify-end gap-2 mt-4">
+        <button onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded">Hapus</button>
+        <button onClick={() => setSelectedMember(null)} className="bg-gray-300 px-4 py-2 rounded">Batal</button>
+        <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
+      </div>
+    </div>
+  </div>
+)}
+
     </section>
   );
 };

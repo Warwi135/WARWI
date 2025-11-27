@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import StrukturOrganisasi from '../components/StrukturOrganisasiRead';
+import StrukturOrganisasi from '../components/StrukturOrganisasi';
 import { usePageHeader } from '../contexts/PageHeaderContext';
 import { motion } from 'framer-motion';
 

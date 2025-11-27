@@ -5,6 +5,9 @@ import Profil from './pages/Profil';
 import Pelayanan from './pages/Pelayanan';
 import Postingan from './pages/Postingan';
 import { PageHeaderProvider } from './contexts/PageHeaderContext';
+import ProfilAdmin from "./pages/ProfilAdmin";
+
+
 
 function App() {
   return (
@@ -16,6 +19,8 @@ function App() {
             <Route path="/profil" element={<Profil />} />
             <Route path="/pelayanan" element={<Pelayanan />} />
             <Route path="/postingan" element={<Postingan />} />
+            <Route path="/admin/profil" element={<ProfilAdmin />} />
+
           </Route>
         </Routes>
       </PageHeaderProvider>
