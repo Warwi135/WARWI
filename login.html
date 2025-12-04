@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Warung Dwi</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Raleway:300,600" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+<link rel="stylesheet" href="static/css/stylee.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="container">
+   <section id="formHolder">
+
+      <div class="row">
+
+         <!-- Brand Box -->
+         <div class="col-sm-6 brand">
+            <a href="/utama" class="logo">WARWI <span>.</span></a>
+            <a href="/utama" class="logo" style="position:absolute; bottom:20px; right:20px;">Kembali <span>.</span></a>
+
+            <div class="heading">
+
+               <h2 style="font-family: 'Times New Roman', serif;">Warung Dwi</h2>
+            </div>
+
+            <div class="success-msg" style="display: none;">
+               <p>Terima Kasih sudah register!</p>
+               <a href="#" class="profile">Login</a>
+            </div>
+         </div>
+
+
+         <!-- Form Box -->
+         <div class="col-sm-6 form">
+
+            <!-- Login Form -->
+            <div id="loginForm" class="login form-peice switched">
+               <form class="login-form" action="/login" id="log" method="post">
+                  <div class="form-group">
+                     <label for="loginemail">Email Adderss</label>
+                     <input type="email" name="email" id="loginemail" required>
+                  </div>
+
+                  <div class="form-group">
+                     <label for="loginPassword">Password</label>
+                     <input type="password" name="password" id="loginPassword" required>
+                  </div>
+
+                  <div class="CTA">
+                     <input type="submit" value="Login">
+                     <a href="#" class="switch">Daftar</a>
+                  </div>
+               </form>
+            </div>
+            <!-- End Login Form -->
+
+
+            <!-- Signup Form -->
+            <div class="signup form-peice">
+               <form class="signup-form" action="/register" method="post">
+
+                  <div class="form-group">
+                     <label for="name">Nama Lengkap</label>
+                     <input type="text" name="name" id="name" class="name">
+                     <span class="error"></span>
+                  </div>
+
+                  <div class="form-group">
+                     <label for="email">Email</label>
+                     <input type="email" name="email" id="email" class="email">
+                     <span class="error"></span>
+                  </div>
+
+                  <div class="form-group">
+                     <label for="phone">Nomer Telepon</label>
+                     <input type="text" name="phone" id="phone" required>
+                  </div>
+
+                  <div class="form-group">
+                     <label for="password">Password</label>
+                     <input type="password" name="password" id="password" class="pass">
+                     <span class="error"></span>
+                  </div>
+
+                  <div class="form-group">
+                     <label for="passwordCon">Confirm Password</label>
+                     <input type="password" name="passwordCon" id="passwordCon" class="passConfirm">
+                     <span class="error"></span>
+                  </div>
+
+                  <div class="CTA">
+                     <input type="submit" value="Register" id="submit">
+                     <a href="#" class="switch">Sudah punya akun</a>
+                  </div>
+               </form>
+            </div><!-- End Signup Form -->
+         </div>
+      </div>
+
+   </section>
+
+</div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script><script  src="static/js/scriptt.js"></script>
+</body>
+</html>
